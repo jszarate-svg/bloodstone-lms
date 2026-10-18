@@ -1727,6 +1727,7 @@ export default function TeacherDashboard() {
 
       {/* MAIN CONTAINER */}
       <main className="flex-1 p-6 max-w-7xl w-full mx-auto print:p-0 print:max-w-none">
+      <DlpAutoFillModal />
         
         {/* WELCOME BANNER */}
         {showNotification && activeTab === 'dashboard' && (
