@@ -1,3 +1,4 @@
+import DlpAutoFillModal from './DlpAutoFillModal';
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -317,6 +318,7 @@ const createEmptySession = (sNum: number): SessionDLP => ({
 export default function TeacherDashboard() {
   const router = useRouter();
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [isAutoFillOpen, setIsAutoFillOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'sf2' | 'ilaw' | 'weelmat' | 'sis' | 'aral'>('dashboard');
   const [sisTab, setSisTab] = useState<'roster' | 'subject_grades' | 'class_summary' | 'gradeslip_preview'>('roster');
   const [students, setStudents] = useState<Student[]>(() => {
