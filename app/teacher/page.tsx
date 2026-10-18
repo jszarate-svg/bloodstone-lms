@@ -944,7 +944,7 @@ export default function TeacherDashboard() {
         <table>
           <tr><td colspan="2" class="section-head">V. ASSESSMENT & WAYS FORWARD</td></tr>
           <tr><td class="bold" width="25%">Formative Assessment</td><td>${currentSession.assessment}</td></tr>
-          <tr><td class="bold">Extended Learning</td><td>${currentSession.extendedLearning}</td></tr>
+          <tr><td class="bold">Extended Learning</td><td contentEditable={true} suppressContentEditableWarning={true} className="outline-none focus:bg-amber-50 cursor-text min-h-[50px] whitespace-pre-wrap">${currentSession.extendedLearning}</td></tr>
         </table>
 
         <table>
@@ -2705,9 +2705,7 @@ export default function TeacherDashboard() {
 
                   <div>
                     <span className="font-bold text-slate-900">Extended Learning Opportunities:</span>
-                    <input 
-                      type="text" 
-                      value={currentActiveSessionData.extendedLearning} 
+                    <textarea rows={3} value={currentActiveSessionData.extendedLearning} 
                       onChange={e => setSessionsData(prev => ({
                         ...prev,
                         [activeSessionTab]: { ...prev[activeSessionTab], extendedLearning: e.target.value }
