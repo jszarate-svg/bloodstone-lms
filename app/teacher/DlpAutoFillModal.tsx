@@ -26,30 +26,71 @@ export default function DlpAutoFillModal() {
   const handleParseAndApply = () => {
     if (!rawText.trim()) return;
 
-    const parseSection = (regex: RegExp, fallback: string = '') => {
-      const match = rawText.match(regex);
-      return match ? match[1].trim() : fallback;
+    // Helper to search text blocks by multi-keyword criteria
+    const extractSection = (keywords: string[]): string => {
+      const lines = rawText.split('\n');
+      let captured: string[] = [];
+      let recording = false;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const lower = line.toLowerCase();
+
+        // Check if current line acts as a header for requested section
+        const isTargetHeader = keywords.some(kw => lower.includes(kw.toLowerCase()));
+        
+        if (isTargetHeader) {
+          recording = true;
+          // Capture content on same line after colon if present
+          if (line.includes(':')) {
+            const afterColon = line.split(':').slice(1).join(':').trim();
+            if (afterColon) captured.push(afterColon);
+          }
+          continue;
+        }
+
+        // Stop recording when encountering another major header line
+        if (recording) {
+          if (
+            /^(?:[I|V|X]+\.|[A-Z]\.|[\#]{1,4}|\*\*[^*]+\*\*:?)/i.test(line) &&
+            !keywords.some(kw => lower.includes(kw.toLowerCase()))
+          ) {
+            // Check if this new header belongs to another section
+            if (line.includes(':') || line.startsWith('#') || line.startsWith('**')) {
+              break;
+            }
+          }
+          if (line) captured.push(line);
+        }
+      }
+
+      return captured.join('\n').replace(/\*+/g, '').trim();
     };
 
+    // Smart semantic extraction across English & Tagalog terms
     const parsedData = {
-      lessonName: parseSection(/(?:Name of Lesson|Aralin|Paksa):?\s*([^\n]+)/i),
-      learningCompetency: parseSection(/(?:Learning Competency|Kasanayang Pampagkatuto):?\s*([^\n]+(?:\n(?!Learning Objectives|Layunin|Learner Context)[^\n]+)*)/i),
-      objectiveKnowledge: parseSection(/(?:Kaalaman|Knowledge|Learning Objectives|Mga Layunin):?\s*([^\n]+)/i),
-      objectiveSkills: parseSection(/(?:Kasanayan|Skills):?\s*([^\n]+)/i),
-      objectiveAttitude: parseSection(/(?:Saloobin|Attitude):?\s*([^\n]+)/i),
-      learnerContext: parseSection(/(?:Learner Context|Kondisyon ng Mag-aaral):?\s*([^\n]+)/i),
-      preLesson: parseSection(/(?:Pre-Lesson|Panimula|Pagganyak):?\s*([^\n]+(?:\n(?!Direct Instruction|Pagtatalakay|Lesson Proper)[^\n]+)*)/i),
-      directInstruction: parseSection(/(?:Direct Instruction|Pagtatalakay|Lesson Proper):?\s*([^\n]+(?:\n(?!Group Activity|Gawain|Post-Lesson)[^\n]+)*)/i) || rawText, // Fallback to full text if headers missing
-      groupActivity: parseSection(/(?:Group Activity|Pangkatang Gawain):?\s*([^\n]+)/i),
-      applicationSynthesis: parseSection(/(?:Application|Pagsasanay):?\s*([^\n]+)/i),
-      concludingActivity: parseSection(/(?:Concluding Activity|Pangwakas|Post-Lesson):?\s*([^\n]+)/i),
-      references: parseSection(/(?:References|Sanggunian):?\s*([^\n]+)/i),
+      learningCompetency: extractSection(['competency', 'kasanayan', 'pamantayan']),
+      objectiveKnowledge: extractSection(['knowledge', 'kaalaman', 'layunin', 'objectives']),
+      objectiveSkills: extractSection(['skills', 'kasanayan', 'kakayahan']),
+      objectiveAttitude: extractSection(['attitude', 'saloobin', 'papahalaga']),
+      learnerContext: extractSection(['context', 'kondisyon', 'background', 'revising']),
+      preLesson: extractSection(['pre-lesson', 'pagganyak', 'panimula', 'introduction', 'warm-up']),
+      directInstruction: extractSection(['direct instruction', 'pagtalakay', 'pagtalakay ng paksa', 'lesson proper', 'presentation', 'activity 1']),
+      groupActivity: extractSection(['group activity', 'pangkatang gawain', 'gawain', 'activity 2']),
+      applicationSynthesis: extractSection(['application', 'pagsasanay', 'synthesis', 'paglalapat', 'abstraction']),
+      concludingActivity: extractSection(['concluding', 'pangwakas', 'evaluation', 'pagtataya', 'assessment']),
+      references: extractSection(['references', 'sanggunian', 'mga sanggunian', 'textbook']),
     };
+
+    // Smart Fallback: If nothing matched specific sections, put everything into Direct Instruction
+    const hasAnyParsedData = Object.values(parsedData).some(val => val.length > 0);
+    if (!hasAnyParsedData) {
+      parsedData.directInstruction = rawText.replace(/\*+/g, '').trim();
+    }
 
     window.dispatchEvent(new CustomEvent('apply-dlp-autofill', { detail: parsedData }));
     setRawText('');
     setIsOpen(false);
-    alert('✨ DLP Auto-Filled successfully!');
   };
 
   return (
@@ -68,13 +109,13 @@ export default function DlpAutoFillModal() {
         </div>
 
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Paste the complete response generated by Gemini below to fill all DLP fields.
+          Paste any raw response block from Gemini. Content will be automatically recognized and assigned to the matching form fields.
         </p>
 
         <textarea
           value={rawText}
           onChange={(e) => setRawText(e.target.value)}
-          placeholder="Paste full text from Gemini starting from 'Learning Competency:'..."
+          placeholder="Paste text from Gemini here..."
           rows={10}
           className="w-full p-3 border rounded-xl dark:bg-slate-800 dark:text-white dark:border-slate-700 text-sm focus:ring-2 focus:ring-red-500 outline-none"
         />
