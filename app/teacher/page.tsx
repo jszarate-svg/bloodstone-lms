@@ -1,5 +1,7 @@
 "use client";
 
+import Link from 'next/link';
+
 import DlpAutoFillModal from "./DlpAutoFillModal";
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -633,7 +635,30 @@ export default function TeacherDashboard() {
         </style>
       </head>
       <body>
-        <div style="text-align: center; margin-bottom: 8pt;">
+        
+          {/* Seat Plan Generator Card */}
+          <Link href="/teacher/seatplan" className="block">
+            <div className="bg-[#0b0e1e]/80 hover:bg-[#0f1329] border border-slate-800/80 hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
+              <div className="flex items-center justify-between">
+                <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
+                  <Users className="w-5 h-5" />
+                </div>
+                <span className="text-[9px] font-bold px-2.5 py-0.5 bg-red-950 text-red-400 border border-red-800/50 rounded-full">
+                  NEW TOOL
+                </span>
+              </div>
+              <div>
+                <h3 className="font-bold text-white text-base group-hover:text-red-400 transition">
+                  Seat Plan Generator
+                </h3>
+                <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                  Smart automated seating arrangements, grid customization, and printable classroom layouts.
+                </p>
+              </div>
+            </div>
+          </Link>
+
+<div style="text-align: center; margin-bottom: 8pt;">
           <div className="header-title">ARAL READING PLUS IRIP FOR KEY STAGES 2</div>
           <div className="sub-title">Bagonbon National High School • Department of Education</div>
         </div>
