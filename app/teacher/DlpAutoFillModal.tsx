@@ -2,6 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 
+
+  const formatText = (command: string, value: string | undefined = undefined) => {
+    document.execCommand(command, false, value);
+  };
+
 export default function DlpAutoFillModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [rawText, setRawText] = useState('');
