@@ -2180,7 +2180,19 @@ export default function TeacherDashboard() {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h3 className={`text-lg font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    <Sparkles className="w-5 h-5 text-red-500" /> DepEd Order No. 016, s. 2026 — Weekly ILAW Daily Lesson Log Generator
+                    <Sparkles className="w-5 h-5 text-red-500" /> 
+      {/* Instant Gemini DLP Importer Button */}
+      <div className="flex justify-end mb-4 print:hidden">
+        <button
+          type="button"
+          onClick={() => setIsAutoFillOpen(true)}
+          className="flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white font-bold py-2.5 px-5 rounded-xl shadow-lg transition transform active:scale-95 text-sm"
+        >
+          ⚡ Auto-Fill DLP from Gemini Text
+        </button>
+      </div>
+
+              DepEd Order No. 016, s. 2026 — Weekly ILAW Daily Lesson Log Generator
                   </h3>
                   <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'} mt-0.5`}>
                     Full-week 5-session planning, multi-section schedule editor, Word export, database archive with Term & Week tracking, and clean reflection block.
