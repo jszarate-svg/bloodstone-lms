@@ -498,7 +498,7 @@ export default function TeacherDashboard() {
     }
   };
 
-  const handleDeleteSavedDLP = (id: string, label: string) => {
+  const handleDeleteSavedDLP = (idToDelete?: string, e?: any) => {
     if (confirm(`Are you sure you want to delete "${label}" from database?`)) {
       const updated = savedDLPsDatabase.filter(r => r.id !== id);
       setSavedDLPsDatabase(updated);
