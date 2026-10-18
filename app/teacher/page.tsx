@@ -638,7 +638,7 @@ export default function TeacherDashboard() {
         
           {/* Seat Plan Generator Card */}
           <Link href="/teacher/seatplan" className="block">
-            <div className="bg-[#0b0e1e]/80 hover:bg-[#0f1329] border border-slate-800/80 hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
+            <div className="bg-[#121520]/60 hover:bg-[#161a29]/90 border border-white/[0.08] hover:border-rose-500/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] shadow-2xl backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
                   <Users className="w-5 h-5" />
@@ -1680,7 +1680,7 @@ export default function TeacherDashboard() {
 
           {/* Seat Plan Generator Card */}
           <Link href="/teacher/seatplan" className="block">
-            <div className="bg-[#0b0e1e]/80 hover:bg-[#0f1329] border border-slate-800/80 hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
+            <div className="bg-[#121520]/60 hover:bg-[#161a29]/90 border border-white/[0.08] hover:border-rose-500/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] shadow-2xl backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
                   <Users className="w-5 h-5" />
@@ -1858,7 +1858,7 @@ export default function TeacherDashboard() {
 
           {/* Seat Plan Generator Link Card */}
           <Link href="/teacher/seatplan" className="block">
-            <div className="bg-[#0b0e1e]/80 hover:bg-[#0f1329] border border-slate-800/80 hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
+            <div className="bg-[#121520]/60 hover:bg-[#161a29]/90 border border-white/[0.08] hover:border-rose-500/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] shadow-2xl backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
                   <Users className="w-5 h-5" />
