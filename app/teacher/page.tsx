@@ -638,7 +638,7 @@ export default function TeacherDashboard() {
         
           {/* Seat Plan Generator Card */}
           <Link href="/teacher/seatplan" className="block">
-            <div className="bg-[#0b0e1e]/80 hover:bg-[#0f1329] border border-slate-800/80 hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
+            <div className="bg-white dark:bg-[#0b0e1e]/80 hover:bg-slate-50 dark:hover:bg-[#0f1329] border border-slate-200 dark:border-slate-800/80 shadow-sm hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
                   <Users className="w-5 h-5" />
@@ -1680,7 +1680,7 @@ export default function TeacherDashboard() {
 
           {/* Seat Plan Generator Card */}
           <Link href="/teacher/seatplan" className="block">
-            <div className="bg-[#0b0e1e]/80 hover:bg-[#0f1329] border border-slate-800/80 hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
+            <div className="bg-white dark:bg-[#0b0e1e]/80 hover:bg-slate-50 dark:hover:bg-[#0f1329] border border-slate-200 dark:border-slate-800/80 shadow-sm hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
                   <Users className="w-5 h-5" />
@@ -1858,7 +1858,7 @@ export default function TeacherDashboard() {
 
           {/* Seat Plan Generator Link Card */}
           <Link href="/teacher/seatplan" className="block">
-            <div className="bg-[#0b0e1e]/80 hover:bg-[#0f1329] border border-slate-800/80 hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
+            <div className="bg-white dark:bg-[#0b0e1e]/80 hover:bg-slate-50 dark:hover:bg-[#0f1329] border border-slate-200 dark:border-slate-800/80 shadow-sm hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
                   <Users className="w-5 h-5" />
