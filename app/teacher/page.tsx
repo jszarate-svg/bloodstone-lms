@@ -2486,7 +2486,13 @@ export default function TeacherDashboard() {
                   </tr>
                   <tr>
                     <td className="border border-slate-900 p-1.5 font-bold bg-slate-100">References</td>
-                    <td className="border border-slate-900 p-1.5 text-[11px]" colSpan={3}>{dlpReferences}</td>
+                    <td 
+    className="border border-slate-900 p-1.5 text-[11px] focus:bg-amber-50 dark:focus:bg-slate-800/50 outline-none cursor-text min-h-[40px]" 
+    colSpan={3} 
+    contentEditable={true} 
+    suppressContentEditableWarning={true}
+    onBlur={(e) => setDlpReferences && setDlpReferences(e.currentTarget.innerText)}
+  >{dlpReferences}</td>
                   </tr>
                 </tbody>
               </table>
