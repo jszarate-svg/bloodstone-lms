@@ -26,67 +26,38 @@ export default function DlpAutoFillModal() {
   const handleParseAndApply = () => {
     if (!rawText.trim()) return;
 
-    // Helper to search text blocks by multi-keyword criteria
-    const extractSection = (keywords: string[]): string => {
-      const lines = rawText.split('\n');
-      let captured: string[] = [];
-      let recording = false;
+    // Precision extractor for Gemini's tabular / inline output structure
+    const getBlock = (startRegex: RegExp, endRegexes: RegExp[]) => {
+      const startMatch = rawText.match(startRegex);
+      if (!startMatch) return '';
+      
+      const startIndex = startMatch.index! + startMatch[0].length;
+      let endIndex = rawText.length;
 
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        const lower = line.toLowerCase();
-
-        // Check if current line acts as a header for requested section
-        const isTargetHeader = keywords.some(kw => lower.includes(kw.toLowerCase()));
-        
-        if (isTargetHeader) {
-          recording = true;
-          // Capture content on same line after colon if present
-          if (line.includes(':')) {
-            const afterColon = line.split(':').slice(1).join(':').trim();
-            if (afterColon) captured.push(afterColon);
-          }
-          continue;
-        }
-
-        // Stop recording when encountering another major header line
-        if (recording) {
-          if (
-            /^(?:[I|V|X]+\.|[A-Z]\.|[\#]{1,4}|\*\*[^*]+\*\*:?)/i.test(line) &&
-            !keywords.some(kw => lower.includes(kw.toLowerCase()))
-          ) {
-            // Check if this new header belongs to another section
-            if (line.includes(':') || line.startsWith('#') || line.startsWith('**')) {
-              break;
-            }
-          }
-          if (line) captured.push(line);
+      for (const endReg of endRegexes) {
+        const endMatch = rawText.substring(startIndex).match(endReg);
+        if (endMatch && endMatch.index !== undefined) {
+          endIndex = Math.min(endIndex, startIndex + endMatch.index);
         }
       }
 
-      return captured.join('\n').replace(/\*+/g, '').trim();
+      return rawText.substring(startIndex, endIndex).trim().replace(/\s+/g, ' ');
     };
 
-    // Smart semantic extraction across English & Tagalog terms
     const parsedData = {
-      learningCompetency: extractSection(['competency', 'kasanayan', 'pamantayan']),
-      objectiveKnowledge: extractSection(['knowledge', 'kaalaman', 'layunin', 'objectives']),
-      objectiveSkills: extractSection(['skills', 'kasanayan', 'kakayahan']),
-      objectiveAttitude: extractSection(['attitude', 'saloobin', 'papahalaga']),
-      learnerContext: extractSection(['context', 'kondisyon', 'background', 'revising']),
-      preLesson: extractSection(['pre-lesson', 'pagganyak', 'panimula', 'introduction', 'warm-up']),
-      directInstruction: extractSection(['direct instruction', 'pagtalakay', 'pagtalakay ng paksa', 'lesson proper', 'presentation', 'activity 1']),
-      groupActivity: extractSection(['group activity', 'pangkatang gawain', 'gawain', 'activity 2']),
-      applicationSynthesis: extractSection(['application', 'pagsasanay', 'synthesis', 'paglalapat', 'abstraction']),
-      concludingActivity: extractSection(['concluding', 'pangwakas', 'evaluation', 'pagtataya', 'assessment']),
-      references: extractSection(['references', 'sanggunian', 'mga sanggunian', 'textbook']),
+      lessonName: getBlock(/Name of Lesson/i, [/Date & Time/i, /Designed by/i]),
+      learningCompetency: getBlock(/Learning Competency:?/i, [/Learning Objectives:?/i, /Learner Context:?/i]),
+      objectiveKnowledge: getBlock(/1\.\s*Kaalaman:?/i, [/2\.\s*Kasanayan:?/i, /3\.\s*Saloobin:?/i, /Learner Context:?/i]),
+      objectiveSkills: getBlock(/2\.\s*Kasanayan:?/i, [/3\.\s*Saloobin:?/i, /Learner Context:?/i]),
+      objectiveAttitude: getBlock(/3\.\s*Saloobin:?/i, [/Learner Context:?/i, /Learning Experience/i]),
+      learnerContext: getBlock(/Learner Context:?/i, [/Learning Experience/i, /Pre-Lesson/i]),
+      preLesson: getBlock(/Pre-Lesson Activity[^\n]*:?/i, [/Lesson Flow/i, /1\.\s*Direct Instruction/i]),
+      directInstruction: getBlock(/1\.\s*Direct Instruction[^\n]*:?/i, [/2\.\s*Group Activity/i, /3\.\s*Application/i]),
+      groupActivity: getBlock(/2\.\s*Group Activity[^\n]*:?/i, [/3\.\s*Application/i, /4\.\s*Concluding/i]),
+      applicationSynthesis: getBlock(/3\.\s*Application & Synthesis[^\n]*:?/i, [/4\.\s*Concluding/i, /Learning Resources/i]),
+      concludingActivity: getBlock(/4\.\s*Concluding Activity[^\n]*:?/i, [/Learning Resources/i, /Opportunities/i]),
+      references: getBlock(/References/i, [/Declaration of AI Use/i, /Intentions/i]),
     };
-
-    // Smart Fallback: If nothing matched specific sections, put everything into Direct Instruction
-    const hasAnyParsedData = Object.values(parsedData).some(val => val.length > 0);
-    if (!hasAnyParsedData) {
-      parsedData.directInstruction = rawText.replace(/\*+/g, '').trim();
-    }
 
     window.dispatchEvent(new CustomEvent('apply-dlp-autofill', { detail: parsedData }));
     setRawText('');
@@ -109,13 +80,13 @@ export default function DlpAutoFillModal() {
         </div>
 
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Paste any raw response block from Gemini. Content will be automatically recognized and assigned to the matching form fields.
+          Paste the raw output block from Gemini to auto-fill all DLP fields on the page.
         </p>
 
         <textarea
           value={rawText}
           onChange={(e) => setRawText(e.target.value)}
-          placeholder="Paste text from Gemini here..."
+          placeholder="Paste raw text from Gemini..."
           rows={10}
           className="w-full p-3 border rounded-xl dark:bg-slate-800 dark:text-white dark:border-slate-700 text-sm focus:ring-2 focus:ring-red-500 outline-none"
         />
