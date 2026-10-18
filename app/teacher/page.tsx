@@ -319,7 +319,15 @@ export default function TeacherDashboard() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'sf2' | 'ilaw' | 'weelmat' | 'sis' | 'aral'>('dashboard');
   const [sisTab, setSisTab] = useState<'roster' | 'subject_grades' | 'class_summary' | 'gradeslip_preview'>('roster');
-  const [students, setStudents] = useState<Student[]>(ENROLLED_STUDENTS);
+  const [students, setStudents] = useState<Student[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('enrolled_students_v1');
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) {}
+      }
+    }
+    return ENROLLED_STUDENTS;
+  });
   const [selectedStudentId, setSelectedStudentId] = useState<string>('1');
 
   // ARAL PROGRAM STATE
@@ -1287,6 +1295,10 @@ export default function TeacherDashboard() {
 
   const [studentRegistry, setStudentRegistry] = useState<Record<string, { password: string }>>({});
   const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    localStorage.setItem('enrolled_students_v1', JSON.stringify(students));
+  }, [students]);
 
   useEffect(() => {
     const registry = JSON.parse(localStorage.getItem('student_accounts_registry') || '{}');
