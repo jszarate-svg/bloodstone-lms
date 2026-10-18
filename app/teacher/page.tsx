@@ -2705,7 +2705,7 @@ export default function TeacherDashboard() {
 
                   <div>
                     <span className="font-bold text-slate-900">Extended Learning Opportunities:</span>
-                    <textarea rows={3} value={currentActiveSessionData.extendedLearning} 
+                    <textarea rows={3} style={{ overflow: "hidden" }} onInput={(e) => { e.currentTarget.style.height = "auto"; e.currentTarget.style.height = e.currentTarget.scrollHeight + "px"; }} value={currentActiveSessionData.extendedLearning} 
                       onChange={e => setSessionsData(prev => ({
                         ...prev,
                         [activeSessionTab]: { ...prev[activeSessionTab], extendedLearning: e.target.value }
