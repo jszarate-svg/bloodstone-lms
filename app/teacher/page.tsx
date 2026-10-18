@@ -498,7 +498,7 @@ export default function TeacherDashboard() {
     }
   };
 
-  const handleDeleteSavedDLP = (idToDelete?: string, e?: any) => {
+  const handleDeleteSavedDLP = (id: string, label: string) => {
     if (confirm(`Are you sure you want to delete "${label}" from database?`)) {
       const updated = savedDLPsDatabase.filter(r => r.id !== id);
       setSavedDLPsDatabase(updated);
@@ -1954,16 +1954,6 @@ export default function TeacherDashboard() {
                         <option key={m} value={m} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>{m}</option>
                       ))}
                     </select>
-            {selectedSavedDlpId && (
-              <button
-                type="button"
-                onClick={() => handleDeleteSavedDLP(selectedSavedDlpId)}
-                className="px-3 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/30 rounded-xl text-xs font-bold transition-all flex items-center gap-1 shrink-0"
-                title="Delete Selected Plan"
-              >
-                🗑️ Delete
-              </button>
-            )}
                   </div>
 
                   <button 
