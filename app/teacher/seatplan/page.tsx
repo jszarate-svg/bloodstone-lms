@@ -331,7 +331,7 @@ export default function SeatPlanPage() {
                     key={`empty-${idx}`}
                     className="min-h-[80px] p-3 rounded-xl border border-dashed border-slate-800 bg-slate-900/40 flex items-center justify-center text-[10px] text-slate-500 font-medium text-center"
                   >
-                    Click 'Auto-Apply Smart Arrangement'
+                    Empty Seat (Click to Edit)
                   </div>
                 ))}
           </div>
