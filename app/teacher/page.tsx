@@ -672,26 +672,7 @@ export default function TeacherDashboard() {
       <body>
         
           {/* Seat Plan Generator Card */}
-          <Link href="/teacher/seatplan" className="block">
-            <div className="bg-slate-900/60 hover:bg-slate-900/90 border border-slate-800/80 text-white shadow-sm hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
-              <div className="flex items-center justify-between">
-                <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
-                  <Users className="w-5 h-5" />
-                </div>
-                <span className="text-[9px] font-bold px-2.5 py-0.5 bg-red-950 text-red-400 border border-red-800/50 rounded-full">
-                  NEW TOOL
-                </span>
-              </div>
-              <div>
-                <h3 className="font-bold text-white text-base group-hover:text-red-400 transition">
-                  Seat Plan Generator
-                </h3>
-                <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                  Smart automated seating arrangements, grid customization, and printable classroom layouts.
-                </p>
-              </div>
-            </div>
-          </Link>
+          
 
 <div style="text-align: center; margin-bottom: 8pt;">
           <div className="header-title">ARAL READING PLUS IRIP FOR KEY STAGES 2</div>
@@ -1714,26 +1695,7 @@ export default function TeacherDashboard() {
         <div className="grid grid-cols-2 gap-8 pt-4 text-xs font-semibold">
 
           {/* Seat Plan Generator Card */}
-          <Link href="/teacher/seatplan" className="block">
-            <div className="bg-slate-900/60 hover:bg-slate-900/90 border border-slate-800/80 text-white shadow-sm hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
-              <div className="flex items-center justify-between">
-                <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
-                  <Users className="w-5 h-5" />
-                </div>
-                <span className="text-[9px] font-bold px-2.5 py-0.5 bg-red-950 text-red-400 border border-red-800/50 rounded-full">
-                  NEW TOOL
-                </span>
-              </div>
-              <div>
-                <h3 className="font-bold text-white text-base group-hover:text-red-400 transition">
-                  Seat Plan Generator
-                </h3>
-                <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                  Smart automated seating arrangements, grid customization, and printable classroom layouts.
-                </p>
-              </div>
-            </div>
-          </Link>
+          
 
           <div className="text-center">
             <div className="text-slate-600 mb-1 text-center">Prepared by:</div>
@@ -1892,26 +1854,7 @@ export default function TeacherDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
 
           {/* Seat Plan Generator Link Card */}
-          <Link href="/teacher/seatplan" className="block">
-            <div className="bg-slate-900/60 hover:bg-slate-900/90 border border-slate-800/80 text-white shadow-sm hover:border-red-500/50 rounded-2xl p-6 space-y-4 transition cursor-pointer group">
-              <div className="flex items-center justify-between">
-                <div className="p-3 bg-red-950/30 border border-red-900/30 text-red-500 rounded-xl group-hover:bg-red-600 group-hover:text-white transition">
-                  <Users className="w-5 h-5" />
-                </div>
-                <span className="text-[9px] font-bold px-2.5 py-0.5 bg-red-950 text-red-400 border border-red-800/50 rounded-full">
-                  NEW TOOL
-                </span>
-              </div>
-              <div>
-                <h3 className="font-bold text-white text-base group-hover:text-red-400 transition">
-                  Seat Plan Generator
-                </h3>
-                <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                  Smart automated seating arrangements, grid customization, and printable classroom layouts.
-                </p>
-              </div>
-            </div>
-          </Link>
+          
 
               <div onClick={() => setActiveTab('sf2')} className={`p-6 rounded-3xl border cursor-pointer transition-all duration-300 group hover:-translate-y-1 hover:shadow-2xl relative overflow-hidden ${isDark ? 'bg-slate-900/70 border-slate-800 hover:border-red-500/40' : 'bg-white border-slate-200/90 hover:border-red-500/40'}`}>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-2xl group-hover:bg-red-500/10 transition-all duration-500"></div>
