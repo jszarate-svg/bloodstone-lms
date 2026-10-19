@@ -318,7 +318,14 @@ export default function SeatPlanPage() {
 
                       <div className="text-center py-1">
                         {student ? (
-                          <p className="text-xs font-bold line-clamp-2">{student.name}</p>
+                          <input
+      type="text"
+      defaultValue={student.name}
+      onChange={(e) => {
+        student.name = e.target.value;
+      }}
+      className="w-full bg-transparent text-xs font-bold text-center text-white outline-none focus:bg-amber-500/20 focus:text-amber-200 rounded px-1 py-0.5 border border-transparent focus:border-amber-400/50 transition-all"
+    />
                         ) : (
                           <p className="text-[10px] italic">Empty Seat</p>
                         )}
@@ -331,7 +338,11 @@ export default function SeatPlanPage() {
                     key={`empty-${idx}`}
                     className="min-h-[80px] p-3 rounded-xl border border-dashed border-slate-800 bg-slate-900/40 flex items-center justify-center text-[10px] text-slate-500 font-medium text-center"
                   >
-                    Empty Seat (Click to Edit)
+                    <input
+      type="text"
+      placeholder="Click & Type Name..."
+      className="w-full h-full bg-transparent text-xs font-semibold text-center text-slate-300 placeholder:text-slate-500 placeholder:italic outline-none focus:bg-amber-500/20 focus:text-amber-200 rounded px-1 py-0.5 border border-transparent focus:border-amber-400/50 transition-all"
+    />
                   </div>
                 ))}
           </div>
