@@ -239,7 +239,9 @@ export default function TeacherDashboard() {
           </div>
         )}
 
-        {activeTab === 'sf2' && ({/* SF2 OFFICIAL FOOTER SECTION */}
+        {activeTab === 'sf2' && (
+  <div>
+    {/* SF2 OFFICIAL FOOTER SECTION */}
             <div className="mt-4 pt-2 border-t-2 border-black grid grid-cols-12 gap-2 text-[9px] leading-tight font-sans text-black">
               
               {/* Left: Guidelines & Formulas */}
