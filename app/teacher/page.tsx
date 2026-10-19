@@ -317,6 +317,41 @@ const createEmptySession = (sNum: number): SessionDLP => ({
   reflectionText: ''
 });
 
+
+const OBSERVATION_NOTES_PRESETS: Record<string, string[]> = {
+  'Observed': [
+    "Consistently demonstrates full mastery and independent execution during activities.",
+    "Accurately applies core concepts without requiring explicit teacher prompt or intervention.",
+    "Shows exceptional clarity and confident articulation when explaining key steps.",
+    "Flawlessly completes assigned practical exercises within allocated session time.",
+    "Demonstrates high enthusiasm, active participation, and strong task engagement.",
+    "Self-corrects errors independently and displays thorough understanding of content.",
+    "Sustains high accuracy and focus throughout both individual and guided tasks.",
+    "Exceeds expected benchmark performance with detailed, quality outputs."
+  ],
+  'Partially Observed': [
+    "Applies basic concepts correctly but requires occasional teacher scaffolding.",
+    "Shows steady progress but needs supplementary guidance on complex steps.",
+    "Infers meanings in familiar contexts, but struggles with dense or abstract text.",
+    "Demonstrates partial task completion and occasionally hesitates on details.",
+    "Grasps core objectives when guided, but requires additional practice for fluency.",
+    "Identifies main points accurately but needs support when elaborating ideas.",
+    "Follows instructions well initially, but benefits from step-by-step prompts.",
+    "Displays inconsistent execution, alternating between mastery and confusion."
+  ],
+  'Not Observed': [
+    "Struggles to grasp fundamental concepts despite initial teacher assistance.",
+    "Requires intensive 1-on-1 scaffolding and step-by-step foundational review.",
+    "Did not demonstrate target skill during today's session activities.",
+    "Exhibits notable hesitation or disinterest during task execution.",
+    "Unable to complete assigned exercises within the session timeframe.",
+    "Requires fundamental remediation on foundational pre-requisite skills.",
+    "Shows persistent difficulty in applying instructions independently.",
+    "Needs explicit visual or verbal cues to initiate required exercises."
+  ]
+};
+
+
 export default function TeacherDashboard() {
   const router = useRouter();
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
