@@ -352,6 +352,115 @@ const OBSERVATION_NOTES_PRESETS: Record<string, string[]> = {
 };
 
 
+
+const CATEGORY_OBSERVATION_NOTES: Record<string, Record<string, string[]>> = {
+  'Vocabulary & Context Clues': {
+    'Observed': [
+      "Accurately defines complex terms and uses surrounding context clues independently.",
+      "Consistently identifies word meanings and nuanced vocabulary in grade-level texts."
+    ],
+    'Partially Observed': [
+      "Infers meanings of familiar words, but needs scaffolding for dense contextual vocabulary.",
+      "Identifies basic context clues when guided, but struggles with figurative word usage."
+    ],
+    'Not Observed': [
+      "Struggles to determine word meanings from context and requires direct vocabulary instruction."
+    ]
+  },
+  'Fluency & Pacing': {
+    'Observed': [
+      "Reads smoothly with appropriate expression, natural phrasing, and consistent pacing.",
+      "Demonstrates high oral reading fluency with minimal hesitation on multi-syllabic words."
+    ],
+    'Partially Observed': [
+      "Reads accurately but pauses frequently on complex words, affecting natural pacing.",
+      "Maintains fair expression during simple sentences but slows down during technical passages."
+    ],
+    'Not Observed': [
+      "Reads word-by-word with frequent pauses and needs assistance with word decoding."
+    ]
+  },
+  'Story Elements & Structure': {
+    'Observed': [
+      "Effortlessly maps out characters, setting, conflict, and resolution in narrative texts.",
+      "Demonstrates complete understanding of plot progression and character motivations."
+    ],
+    'Partially Observed': [
+      "Identifies main characters and basic settings, but requires prompts for subtle plot transitions.",
+      "Grasps major story events but occasionally confuses secondary plot developments."
+    ],
+    'Not Observed': [
+      "Has difficulty outlining basic story components and identifying central character goals."
+    ]
+  },
+  'Inference & Prediction': {
+    'Observed': [
+      "Makes logical predictions based on textual evidence and draws sound conclusions.",
+      "Reads between the lines to explain character actions and underlying story themes."
+    ],
+    'Partially Observed': [
+      "Formulates basic predictions, but relies heavily on obvious visual or textual cues.",
+      "Draws simple inferences when guided, but hesitates to justify conclusions independently."
+    ],
+    'Not Observed': [
+      "Struggles to draw conclusions beyond explicitly stated facts in the text."
+    ]
+  },
+  'Main Idea & Outlining': {
+    'Observed': [
+      "Succinctly summarizes paragraphs and constructs organized key-point outlines.",
+      "Pinpoints central arguments quickly across various informational text formats."
+    ],
+    'Partially Observed': [
+      "Distinguishes central ideas in brief passages, but gets distracted by supporting details in longer texts.",
+      "Drafts basic summaries but requires teacher guidance to organize hierarchical outlines."
+    ],
+    'Not Observed': [
+      "Struggles to identify the primary message of passages without direct prompts."
+    ]
+  },
+  'Literary Devices & Analysis': {
+    'Observed': [
+      "Recognizes metaphors, similes, and personification, explaining their impact clearly.",
+      "Analyzes author tone and stylistic choices effectively during guided discussions."
+    ],
+    'Partially Observed': [
+      "Identifies common literary devices like similes, but needs guidance to explain deeper meaning.",
+      "Recognizes figurative language when highlighted, but misses subtle author techniques."
+    ],
+    'Not Observed': [
+      "Has difficulty identifying figurative language devices in reading selections."
+    ]
+  },
+  'Critical Thinking & Evaluation': {
+    'Observed': [
+      "Evaluates source credibility, compares viewpoints, and articulates well-reasoned arguments.",
+      "Critiques character decisions thoughtfully using evidence from the text."
+    ],
+    'Partially Observed': [
+      "Forms personal opinions on texts, but needs prompts to support claims with textual evidence.",
+      "Evaluates basic cause-and-effect relationships but hesitates on complex analytical questions."
+    ],
+    'Not Observed': [
+      "Needs structured prompts to analyze text beyond literal comprehension."
+    ]
+  },
+  'Visual & Multimedia Literacy': {
+    'Observed': [
+      "Interprets charts, diagrams, and visual media accurately to complement written content.",
+      "Seamlessly connects visual representations with associated reading materials."
+    ],
+    'Partially Observed': [
+      "Grasps clear visual aids, but needs assistance interpreting complex data charts or graphics.",
+      "Extracts basic details from illustrations but misses secondary informational cues."
+    ],
+    'Not Observed': [
+      "Requires explicit explanation to correlate visual media with text concepts."
+    ]
+  }
+};
+
+
 export default function TeacherDashboard() {
   const router = useRouter();
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -893,7 +1002,7 @@ export default function TeacherDashboard() {
       // Fallback if API fails
       const fallbackNotes: Record<string, string> = {};
       ARAL_READING_CATEGORIES.forEach(cat => {
-        fallbackNotes[cat.id] = `Demonstrated ${aralTargetStatuses[cat.id]?.toLowerCase() || 'observed'} performance in ${cat.categoryName.toLowerCase()}.`;
+        fallbackNotes[cat.id] = (CATEGORY_OBSERVATION_NOTES[category.name]?.[category.status]?.[0] || 'Learner demonstrates steady progress during targeted session tasks.');
       });
       setAralTargetNotes(prev => ({ ...prev, ...fallbackNotes }));
     } finally {
