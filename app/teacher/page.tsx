@@ -239,7 +239,98 @@ export default function TeacherDashboard() {
           </div>
         )}
 
-        {activeTab === 'sf2' && (
+        {activeTab === 'sf2' && ({/* SF2 OFFICIAL FOOTER SECTION */}
+            <div className="mt-4 pt-2 border-t-2 border-black grid grid-cols-12 gap-2 text-[9px] leading-tight font-sans text-black">
+              
+              {/* Left: Guidelines & Formulas */}
+              <div className="col-span-5 pr-2 border-r border-slate-400">
+                <p className="font-bold underline mb-1">GUIDELINES:</p>
+                <ol className="list-decimal pl-3 space-y-0.5 text-[8px]">
+                  <li>The attendance shall be accomplished daily. Refer to codes: <b>blank</b> - Present, <b>x</b> - Absent, <b>/</b> - Tardy.</li>
+                  <li>Dates shall be written in the preceding columns beside Learner's Name.</li>
+                  <li>
+                    <b>Formulas:</b>
+                    <br />a. <i>% Enrolment</i> = (End of Month Enrolment / 1st Friday Enrolment) × 100
+                    <br />b. <i>Average Daily Attendance</i> = Total Daily Attendance / No. of Days of Classes
+                    <br />c. <i>% Attendance for Month</i> = (Average Daily Attendance / End of Month Enrolment) × 100
+                  </li>
+                  <li>Adviser will extend necessary intervention including home visitation for learners with 5 consecutive days of absences.</li>
+                </ol>
+              </div>
+
+              {/* Middle: Reasons/Causes for NLS */}
+              <div className="col-span-3 px-1 border-r border-slate-400 text-[8px]">
+                <p className="font-bold underline mb-1">REASONS/CAUSES FOR NLS:</p>
+                <p className="font-semibold">a. Domestic-Related Factors</p>
+                <p className="pl-2">a.1 Had to take care of siblings / early marriage / family problems</p>
+                <p className="font-semibold mt-0.5">b. Individual-Related Factors</p>
+                <p className="pl-2">b.1 Illness / Overage / Drug Abuse / Poor academic performance</p>
+                <p className="font-semibold mt-0.5">c. Geographic & Financial Factors</p>
+                <p className="pl-2">c.1 Distance home to school / Calamities / Child labor</p>
+              </div>
+
+              {/* Right: Summary for Month Table & Signatures */}
+              <div className="col-span-4 pl-1">
+                <table className="w-full border-collapse border border-black text-[8px] text-center mb-2">
+                  <thead>
+                    <tr className="bg-slate-100 font-bold border-b border-black">
+                      <th className="border border-black px-1 text-left">Summary for the Month</th>
+                      <th className="border border-black px-1 w-6">M</th>
+                      <th className="border border-black px-1 w-6">F</th>
+                      <th className="border border-black px-1 w-8">TOTAL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-black px-1 text-left font-medium">Registered Learners (End of Month)</td>
+                      <td className="border border-black">21</td>
+                      <td className="border border-black">13</td>
+                      <td className="border border-black font-bold">34</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black px-1 text-left">Average Daily Attendance</td>
+                      <td className="border border-black">17.6</td>
+                      <td className="border border-black">12.8</td>
+                      <td className="border border-black font-bold">30.4</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black px-1 text-left">% Attendance for the Month</td>
+                      <td className="border border-black">84.0%</td>
+                      <td className="border border-black">98.1%</td>
+                      <td className="border border-black font-bold">89.4%</td>
+                    </tr>
+                    <tr className="bg-red-50 text-red-900 font-semibold">
+                      <td className="border border-black px-1 text-left">5 Consecutive Days Absences</td>
+                      <td className="border border-black">1</td>
+                      <td className="border border-black">0</td>
+                      <td className="border border-black font-bold">1</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black px-1 text-left">Transferred Out / In</td>
+                      <td className="border border-black">0 / 0</td>
+                      <td className="border border-black">0 / 1</td>
+                      <td className="border border-black font-bold">0 / 1</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                {/* Certification & Signatures */}
+                <div className="mt-3 text-[8px] space-y-3">
+                  <div>
+                    <p className="italic mb-2">I certify that this is a true and correct report.</p>
+                    <p className="font-bold underline text-[9px] uppercase">JUDIMER JOHN S. ZARATE</p>
+                    <p className="text-[7px] text-slate-600">(Signature of Adviser over Printed Name)</p>
+                  </div>
+
+                  <div>
+                    <p className="italic mb-1">Attested by:</p>
+                    <p className="font-bold underline text-[9px] uppercase">HOMEYLIN U. BIRONDO</p>
+                    <p className="text-[7px] text-slate-600">(Signature of School Head over Printed Name)</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           <div className="bg-white text-black p-8 rounded-xl shadow-2xl max-w-5xl mx-auto font-sans">
             {/* Header */}
             <div className="text-center border-b-2 border-black pb-2 mb-4">
