@@ -1,3 +1,4 @@
+cat << 'EOF' > ~/bloodstone-lms/app/teacher/page.tsx
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -61,12 +62,13 @@ interface WeeklyDLPRecord {
   createdAt: string;
 }
 
+// ARAL Program Interfaces
 interface AralLearner {
   id: string;
   fullName: string;
   section: string;
   gradeLevel: string;
-  attendance: Record<string, string>;
+  attendance: Record<string, string>; // dateStr -> 'present' | 'x' | 'h'
 }
 
 interface ReadingTargetCategory {
@@ -329,9 +331,9 @@ export default function TeacherDashboard() {
   const [aralReportDate, setAralReportDate] = useState<string>('2026-10-18');
   const [aralReportWeek, setAralReportWeek] = useState<string>('Week 1');
   const [aralTargetStatuses, setAralTargetStatuses] = useState<Record<string, string>>({
-    cat1: ' Observed', cat2: ' Observed', cat3: ' Partially Observed',
-    cat4: ' Observed', cat5: ' Partially Observed', cat6: ' Observed',
-    cat7: ' Observed', cat8: ' Observed'
+    cat1: '✔ Observed', cat2: '✔ Observed', cat3: '◑ Partially Observed',
+    cat4: '✔ Observed', cat5: '◑ Partially Observed', cat6: '✔ Observed',
+    cat7: '✔ Observed', cat8: '✔ Observed'
   });
   const [aralTargetNotes, setAralTargetNotes] = useState<Record<string, string>>({});
   const [aralSelectedRemarkPreset, setAralSelectedRemarkPreset] = useState<string>(SUGGESTED_ARAL_REMARKS[0]);
@@ -365,7 +367,7 @@ export default function TeacherDashboard() {
   // WeeLMat Module Specific State
   const [selectedWeelmatDlpId, setSelectedWeelmatDlpId] = useState<string>('');
 
-  // 5 Sessions Breakdown Data
+  // 5 Sessions Breakdown Data (Default Clean / Unfilled)
   const [sessionsData, setSessionsData] = useState<Record<number, SessionDLP>>({
     1: createEmptySession(1),
     2: createEmptySession(2),
@@ -374,6 +376,7 @@ export default function TeacherDashboard() {
     5: createEmptySession(5)
   });
 
+  // Clear Handlers
   const handleClearDlpForm = () => {
     if (confirm('Are you sure you want to clear all DLP fields? This will clear session content and subtopics.')) {
       setDlpSubject('');
@@ -395,6 +398,7 @@ export default function TeacherDashboard() {
     }
   };
 
+  // Schedule Manager Helpers
   const handleAddSchedule = () => {
     const id = Date.now().toString();
     setClassSchedules(prev => [...prev, { id, sectionName: 'NewSection', timeSlot: '1:00pm-1:50pm' }]);
@@ -430,6 +434,7 @@ export default function TeacherDashboard() {
     }
   }, [startDate, endDate]);
 
+  // Sync saved DLPs on load
   useEffect(() => {
     const loaded = localStorage.getItem('ilaw_dlp_database_v2');
     if (loaded) {
@@ -492,6 +497,7 @@ export default function TeacherDashboard() {
     }
   };
 
+  // Active Weelmat Record Calculation
   const activeWeelmatRecord = useMemo(() => {
     return savedDLPsDatabase.find(r => r.id === selectedWeelmatDlpId) || {
       id: 'current',
@@ -508,6 +514,7 @@ export default function TeacherDashboard() {
     };
   }, [savedDLPsDatabase, selectedWeelmatDlpId, dlpTerm, dlpWeekNum, formattedLongWeekRange, startDate, endDate, dlpSubject, dlpReferences, classSchedules, sessionsData]);
 
+  // ARAL HELPERS & CALCULATIONS
   const selectedAralLearner = aralLearners.find(a => a.id === selectedAralLearnerId) || aralLearners[0];
 
   const toggleAralAttendance = (learnerId: string, dateStr: string) => {
@@ -557,6 +564,7 @@ export default function TeacherDashboard() {
     }
   };
 
+  // ARAL STATS
   const aralTotalTutees = aralLearners.length;
   const aralAttendanceStats = useMemo(() => {
     let totalPossible = aralLearners.length * aralDates.length;
@@ -580,7 +588,7 @@ export default function TeacherDashboard() {
     const totalCategories = ARAL_READING_CATEGORIES.length;
     let observedCount = 0;
     Object.values(aralTargetStatuses).forEach(st => {
-      if (st === ' Observed') observedCount++;
+      if (st === '✔ Observed') observedCount++;
     });
     return ((observedCount / totalCategories) * 100).toFixed(0);
   }, [aralTargetStatuses]);
@@ -650,7 +658,7 @@ export default function TeacherDashboard() {
                 <span style="font-size:8.5pt; color:#444;">• ${cat.targets.join('<br/>• ')}</span>
               </td>
               <td style="text-align:center; font-weight:bold;">
-                ${aralTargetStatuses[cat.id] || ' Observed'}
+                ${aralTargetStatuses[cat.id] || '✔ Observed'}
               </td>
               <td style="font-size:9pt;">
                 ${aralTargetNotes[cat.id] || ''}
@@ -666,9 +674,9 @@ export default function TeacherDashboard() {
 
         <div style="font-size: 8.5pt; border: 1pt solid black; padding: 4pt; margin-bottom: 15pt;">
           <b>Status Legend:</b><br/>
-           Observed — Ready to proceed to the next reading target<br/>
-           Partially Observed — Needs additional practice on the current reading target<br/>
-           Not Observed — Reteach the current reading target
+          ✔ Observed — Ready to proceed to the next reading target<br/>
+          ◑ Partially Observed — Needs additional practice on the current reading target<br/>
+          ✘ Not Observed — Reteach the current reading target
         </div>
 
         <table>
@@ -697,6 +705,7 @@ export default function TeacherDashboard() {
     document.body.removeChild(link);
   };
 
+  // GEMINI INTEGRATION FUNCTION
   const handleAIParseActiveSession = async () => {
     setIsGeneratingDLP(true);
     const activeData = sessionsData[activeSessionTab];
@@ -1309,11 +1318,6 @@ export default function TeacherDashboard() {
     }));
   };
 
-  const savePresets = (updated: string[]) => {
-    setElectivePresets(updated);
-    localStorage.setItem('clean_elective_presets_v3', JSON.stringify(updated));
-  };
-
   const saveElectivePreset = (title: string) => {
     const trimmed = title.trim();
     if (!trimmed) return;
@@ -1498,6 +1502,8 @@ export default function TeacherDashboard() {
 
     return (
       <div key={targetLearner.id} className="bg-white text-slate-900 p-8 rounded-2xl shadow-xl font-sans print:p-0 print:shadow-none border border-slate-300">
+        
+        {/* HEADER BLOCK */}
         <div className="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-4">
           <img src="/kagawaran-logo.webp" alt="Kagawaran Logo" className="h-16 w-16 object-contain" onError={handleKagawaranError} />
           <div className="text-center space-y-0.5">
@@ -1509,6 +1515,7 @@ export default function TeacherDashboard() {
           <img src="/deped-logo.jpg" alt="DepEd Logo" className="h-14 object-contain" onError={handleDepedError} />
         </div>
 
+        {/* METADATA BLOCK */}
         <table className="w-full text-xs border-collapse border border-slate-900 text-left mb-4">
           <tbody>
             <tr>
@@ -1526,6 +1533,7 @@ export default function TeacherDashboard() {
           </tbody>
         </table>
 
+        {/* READING TARGETS MATRIX */}
         <table className="w-full text-xs border-collapse border border-slate-900 text-left mb-4">
           <thead>
             <tr className="bg-slate-200 font-black text-slate-900 text-center">
@@ -1546,8 +1554,8 @@ export default function TeacherDashboard() {
                   </ul>
                 </td>
                 <td className="border border-slate-900 p-2 text-center font-black text-xs vertical-top">
-                  <span className={aralTargetStatuses[cat.id] === ' Observed' ? 'text-emerald-700' : aralTargetStatuses[cat.id] === ' Partially Observed' ? 'text-amber-700' : 'text-red-700'}>
-                    {aralTargetStatuses[cat.id] || ' Observed'}
+                  <span className={aralTargetStatuses[cat.id] === '✔ Observed' ? 'text-emerald-700' : aralTargetStatuses[cat.id] === '◑ Partially Observed' ? 'text-amber-700' : 'text-red-700'}>
+                    {aralTargetStatuses[cat.id] || '✔ Observed'}
                   </span>
                 </td>
                 <td className="border border-slate-900 p-2 text-[11px] text-slate-800 vertical-top italic">
@@ -1558,18 +1566,21 @@ export default function TeacherDashboard() {
           </tbody>
         </table>
 
+        {/* OVERALL REMARKS */}
         <div className="border border-slate-900 p-3 mb-4 text-xs bg-slate-50">
           <div className="font-bold text-slate-900 uppercase text-[11px] mb-1">Overall Tutor Remarks & Recommendations:</div>
           <p className="text-slate-800 font-medium leading-relaxed">{finalRemark}</p>
         </div>
 
+        {/* LEGEND BLOCK */}
         <div className="border border-slate-900 p-2 mb-6 text-[10px] text-slate-800 bg-slate-100 flex items-center justify-between">
           <span className="font-bold">Status Legend:</span>
-          <span><strong className="text-emerald-800"> Observed</strong> = Ready to proceed to next target</span>
-          <span><strong className="text-amber-800"> Partially Observed</strong> = Needs additional practice</span>
-          <span><strong className="text-red-800"> Not Observed</strong> = Reteach target</span>
+          <span><strong className="text-emerald-800">✔ Observed</strong> = Ready to proceed to next target</span>
+          <span><strong className="text-amber-800">◑ Partially Observed</strong> = Needs additional practice</span>
+          <span><strong className="text-red-800">✘ Not Observed</strong> = Reteach target</span>
         </div>
 
+        {/* SIGNATURE BLOCK */}
         <div className="grid grid-cols-2 gap-8 pt-4 text-xs font-semibold">
           <div className="text-center">
             <div className="text-slate-600 mb-1 text-center">Prepared by:</div>
@@ -1583,6 +1594,7 @@ export default function TeacherDashboard() {
             <div className="text-slate-600 text-[10px] text-center">School Principal I</div>
           </div>
         </div>
+
       </div>
     );
   };
@@ -1591,6 +1603,7 @@ export default function TeacherDashboard() {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans antialiased transition-colors duration-200 selection:bg-red-500 selection:text-white`}>
+      
       <style jsx global>{`
         input[type='number']::-webkit-inner-spin-button,
         input[type='number']::-webkit-outer-spin-button {
@@ -1614,6 +1627,7 @@ export default function TeacherDashboard() {
         }
       `}</style>
 
+      {/* HEADER BAR */}
       <header className={`${isDark ? 'bg-slate-900/90 border-slate-800/80' : 'bg-white/90 border-slate-200'} backdrop-blur-md border-b sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between print:hidden shadow-sm transition-colors duration-200`}>
         <div className="flex items-center space-x-3">
           <span className={`text-xl font-black tracking-tight ${isDark ? 'text-white' : 'text-slate-900'} flex items-center gap-1.5`}>
@@ -1641,7 +1655,10 @@ export default function TeacherDashboard() {
         </div>
       </header>
 
+      {/* MAIN CONTAINER */}
       <main className="flex-1 p-6 max-w-7xl w-full mx-auto print:p-0 print:max-w-none">
+        
+        {/* WELCOME BANNER */}
         {showNotification && activeTab === 'dashboard' && (
           <div className={`mb-6 p-6 rounded-2xl border ${isDark ? 'bg-gradient-to-r from-red-950/40 via-slate-900 to-slate-900 border-red-500/20 text-white' : 'bg-gradient-to-r from-red-50 via-white to-slate-50 border-red-200 text-slate-900'} shadow-md flex items-center justify-between relative transition-all duration-200 print:hidden`}>
             <div className="flex items-center gap-5">
@@ -1664,12 +1681,14 @@ export default function TeacherDashboard() {
           </div>
         )}
 
+        {/* BACK BUTTON */}
         {activeTab !== 'dashboard' && (
           <button onClick={() => setActiveTab('dashboard')} className={`mb-6 flex items-center gap-2 text-xs border px-3.5 py-1.5 rounded-xl transition print:hidden shadow-sm ${isDark ? 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300' : 'bg-white hover:bg-slate-100 border-slate-300 text-slate-700'}`}>
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Cards Dashboard
           </button>
         )}
 
+        {/* ==================== DASHBOARD ==================== */}
         {activeTab === 'dashboard' && (
           <div className="space-y-6">
             <div>
@@ -1764,7 +1783,7 @@ export default function TeacherDashboard() {
           </div>
         )}
 
-        {/* SF2 TAB */}
+        {/* ==================== SF2 GENERATOR MODULE ==================== */}
         {activeTab === 'sf2' && (
           <div className="space-y-6">
             <div className={`p-5 rounded-2xl border space-y-4 print:hidden shadow-sm ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
@@ -1792,7 +1811,7 @@ export default function TeacherDashboard() {
                   <button 
                     onClick={() => setIncludeWeekends(!includeWeekends)} 
                     className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition flex items-center gap-1.5 ${includeWeekends ? 'bg-blue-600/20 border-blue-500/40 text-blue-400' : isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-100 border-slate-300 text-slate-700'}`}>
-                    <span>{includeWeekends ? ' Weekends Included' : '+ Include Weekends'}</span>
+                    <span>{includeWeekends ? '✓ Weekends Included' : '+ Include Weekends'}</span>
                   </button>
 
                   <button 
@@ -2071,13 +2090,16 @@ export default function TeacherDashboard() {
                   </tr>
                 </tbody>
               </table>
+
             </div>
           </div>
         )}
 
-        {/* ILAW TAB */}
+        {/* ==================== ILAW DLP GENERATOR MODULE ==================== */}
         {activeTab === 'ilaw' && (
           <div className="space-y-6">
+            
+            {/* TOP CONTROL BAR & DATABASE SELECTOR */}
             <div className={`p-5 rounded-2xl border space-y-4 print:hidden shadow-sm ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -2112,6 +2134,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* DATABASE QUICK DROPDOWN SELECTOR */}
               {savedDLPsDatabase.length > 0 && (
                 <div className={`p-3 rounded-xl border flex items-center gap-3 ${isDark ? 'bg-slate-950/80 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
                   <Database className="w-4 h-4 text-emerald-400 flex-shrink-0" />
@@ -2130,6 +2153,7 @@ export default function TeacherDashboard() {
                 </div>
               )}
 
+              {/* GENERAL METADATA INPUTS INCL. TERM & WEEK NUMBER */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs font-semibold">
                 <div>
                   <label className="block mb-1 text-amber-400 font-bold">School Term</label>
@@ -2165,6 +2189,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* FLEXIBLE SECTION & TIME SCHEDULE EDITOR */}
               <div className={`p-4 rounded-xl border space-y-3 ${isDark ? 'bg-slate-950/80 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-amber-400 flex items-center gap-2">
@@ -2198,6 +2223,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* MULTI-REFERENCE INPUT */}
               <div>
                 <label className="block mb-1 text-xs font-bold text-slate-400">Multiple References & Textbooks (Cross-referencing):</label>
                 <textarea rows={2} value={dlpReferences} onChange={e => setDlpReferences(e.target.value)} className={`w-full p-2.5 rounded-xl text-xs font-medium border focus:outline-none ${isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-100 border-slate-300 text-slate-900'}`} />
@@ -2205,6 +2231,7 @@ export default function TeacherDashboard() {
 
             </div>
 
+            {/* SESSIONS BREAKDOWN EDITOR TABS (SESSION 1 TO 5) */}
             <div className={`p-5 rounded-2xl border space-y-4 print:hidden shadow-sm ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                 <span className="text-xs font-bold text-white flex items-center gap-2">
@@ -2217,6 +2244,7 @@ export default function TeacherDashboard() {
                 </button>
               </div>
 
+              {/* TABS 1 - 5 */}
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {[1, 2, 3, 4, 5].map(sNum => (
                   <button 
@@ -2229,6 +2257,7 @@ export default function TeacherDashboard() {
                 ))}
               </div>
 
+              {/* ACTIVE SESSION EDITOR FIELDS */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-semibold pt-2">
                 <div>
                   <label className="block mb-1 text-slate-400">Session {activeSessionTab} Title / Specific Subtopic</label>
@@ -2260,7 +2289,10 @@ export default function TeacherDashboard() {
               </div>
             </div>
 
+            {/* PRINTABLE OFFICIAL ILAW DLP SHEET */}
             <div className="bg-white text-slate-900 p-8 rounded-2xl shadow-xl font-sans print:p-0 print:shadow-none">
+              
+              {/* HEADER BLOCK */}
               <div className="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-4">
                 <img src="/kagawaran-logo.webp" alt="Kagawaran Logo" className="h-16 w-16 object-contain" onError={handleKagawaranError} />
                 <div className="text-center space-y-0.5">
@@ -2273,6 +2305,7 @@ export default function TeacherDashboard() {
                 <img src="/deped-logo.jpg" alt="DepEd Logo" className="h-14 object-contain" onError={handleDepedError} />
               </div>
 
+              {/* METADATA TABLE */}
               <table className="w-full text-xs border-collapse border border-slate-900 text-left mb-4">
                 <tbody>
                   <tr>
@@ -2310,6 +2343,7 @@ export default function TeacherDashboard() {
                 </tbody>
               </table>
 
+              {/* ILAW SECTION 1: INTENTIONS */}
               <div className="border border-slate-900 mb-4">
                 <div className="bg-slate-200 font-black text-xs p-1.5 border-b border-slate-900 uppercase tracking-wide text-slate-900">
                   I. INTENTIONS (Layunin at Konteksto)
@@ -2385,6 +2419,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* ILAW SECTION 2: LEARNING EXPERIENCE */}
               <div className="border border-slate-900 mb-4">
                 <div className="bg-slate-200 font-black text-xs p-1.5 border-b border-slate-900 uppercase tracking-wide text-slate-900">
                   II. LEARNING EXPERIENCE (Gawain at Pamamaraan)
@@ -2458,6 +2493,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* ILAW SECTION 3: RESOURCES & INTEGRATION */}
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="border border-slate-900">
                   <div className="bg-slate-200 font-black text-xs p-1.5 border-b border-slate-900 uppercase tracking-wide text-slate-900">
@@ -2494,6 +2530,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* ILAW SECTION 5: ASSESSMENT & WAYS FORWARD */}
               <div className="border border-slate-900 mb-4">
                 <div className="bg-slate-200 font-black text-xs p-1.5 border-b border-slate-900 uppercase tracking-wide text-slate-900">
                   V. ASSESSMENT & WAYS FORWARD
@@ -2527,6 +2564,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* ILAW SECTION 6: SINGLE CLEAN OPEN TEXT AREA FOR REFLECTION */}
               <div className="border border-slate-900 mb-6">
                 <div className="bg-slate-200 font-black text-xs p-1.5 border-b border-slate-900 uppercase tracking-wide text-slate-900 flex justify-between items-center">
                   <span>VI. REFLECTION (PAGNINILAY)</span>
@@ -2547,6 +2585,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* SIGNATURE BLOCK */}
               <div className="grid grid-cols-2 gap-8 pt-4 text-xs font-semibold">
                 <div className="text-center">
                   <div className="text-slate-600 mb-1 text-center">Prepared by:</div>
@@ -2560,10 +2599,12 @@ export default function TeacherDashboard() {
                   <div className="text-slate-600 text-[10px] text-center">School Principal I</div>
                 </div>
               </div>
+
             </div>
           </div>
         )}
 
+        {/* DLP DATABASE ARCHIVE MODAL */}
         {showDbModal && (
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div className={`w-full max-w-3xl p-6 rounded-2xl border shadow-2xl space-y-4 max-h-[85vh] flex flex-col ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
@@ -2625,9 +2666,11 @@ export default function TeacherDashboard() {
           </div>
         )}
 
-        {/* WEELMAT TAB */}
+        {/* ==================== WEELMAT GENERATOR MODULE ==================== */}
         {activeTab === 'weelmat' && (
           <div className="space-y-6">
+            
+            {/* WEELMAT TOP CONTROL PANEL */}
             <div className={`p-5 rounded-2xl border space-y-4 print:hidden shadow-sm ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -2654,6 +2697,7 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
+              {/* AUTOMATIC DLP RECORD SELECTOR DROPDOWN */}
               <div className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center gap-3 ${isDark ? 'bg-slate-950/80 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
                 <div className="flex items-center gap-2 text-xs font-bold text-amber-400 flex-shrink-0">
                   <Sparkles className="w-4 h-4" />
@@ -2674,7 +2718,10 @@ export default function TeacherDashboard() {
               </div>
             </div>
 
+            {/* PRINTABLE OFFICIAL WEELMAT TEMPLATE SHEET */}
             <div className="bg-white text-slate-900 p-8 rounded-2xl shadow-xl font-sans print:p-0 print:shadow-none overflow-x-auto">
+              
+              {/* WEELMAT HEADER WITH LOGOS */}
               <div className="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-4">
                 <img src="/kagawaran-logo.webp" alt="Kagawaran Logo" className="h-16 w-16 object-contain" onError={handleKagawaranError} />
                 <div className="text-center space-y-0.5">
@@ -2686,6 +2733,7 @@ export default function TeacherDashboard() {
                 <img src="/deped-logo.jpg" alt="DepEd Logo" className="h-14 object-contain" onError={handleDepedError} />
               </div>
 
+              {/* WEELMAT METADATA TABLE */}
               <table className="w-full text-xs border-collapse border border-slate-900 text-left mb-4">
                 <thead>
                   <tr className="bg-slate-100 text-center font-bold">
@@ -2705,6 +2753,7 @@ export default function TeacherDashboard() {
                 </tbody>
               </table>
 
+              {/* WEELMAT 5-DAY MATRIX TABLE */}
               <table className="w-full text-xs border-collapse border border-slate-900 text-left mb-4">
                 <thead>
                   <tr className="bg-slate-100 font-bold text-center">
@@ -2716,6 +2765,8 @@ export default function TeacherDashboard() {
                   </tr>
                 </thead>
                 <tbody>
+                  
+                  {/* LESSON TITLE */}
                   <tr>
                     <td colSpan={5} className="border border-slate-900 p-1.5 font-bold bg-slate-200 text-slate-900 uppercase">Lesson Title</td>
                   </tr>
@@ -2727,6 +2778,7 @@ export default function TeacherDashboard() {
                     ))}
                   </tr>
 
+                  {/* COMPETENCY */}
                   <tr>
                     <td colSpan={5} className="border border-slate-900 p-1.5 font-bold bg-slate-200 text-slate-900 uppercase">Competency</td>
                   </tr>
@@ -2738,6 +2790,7 @@ export default function TeacherDashboard() {
                     ))}
                   </tr>
 
+                  {/* SUGGESTED LEARNING MATERIAL / REFERENCE */}
                   <tr>
                     <td colSpan={5} className="border border-slate-900 p-1.5 font-bold bg-slate-200 text-slate-900 uppercase">Suggested Learning Material / Reference</td>
                   </tr>
@@ -2749,6 +2802,7 @@ export default function TeacherDashboard() {
                     ))}
                   </tr>
 
+                  {/* LEARNING ACTIVITIES */}
                   <tr>
                     <td colSpan={5} className="border border-slate-900 p-1.5 font-bold bg-slate-200 text-slate-900 uppercase">Learning Activities</td>
                   </tr>
@@ -2765,6 +2819,7 @@ export default function TeacherDashboard() {
                       );
                     })}
                   </tr>
+
                 </tbody>
               </table>
 
@@ -2772,6 +2827,7 @@ export default function TeacherDashboard() {
                 Note: Ipakita ang natapos na gawa sa magulang para sa pirma bilang ebidensya ng pagsasagawa.
               </div>
 
+              {/* WEELMAT SIGNATURE BLOCK */}
               <div className="grid grid-cols-2 gap-8 text-xs font-semibold">
                 <div className="text-center">
                   <div className="text-slate-600 mb-1 text-center">Prepared by:</div>
@@ -2785,11 +2841,12 @@ export default function TeacherDashboard() {
                   <div className="text-slate-600 text-[10px] text-center">School Principal I</div>
                 </div>
               </div>
+
             </div>
           </div>
         )}
 
-        {/* SIS TAB */}
+        {/* SIS MODULE */}
         {activeTab === 'sis' && (
           <div className={`p-6 rounded-2xl border space-y-6 shadow-sm ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -2822,6 +2879,7 @@ export default function TeacherDashboard() {
               </button>
             </div>
 
+            {/* TAB 1: ROSTER */}
             {sisTab === 'roster' && (
               <div className={`overflow-x-auto rounded-2xl border ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
                 <table className="w-full text-left text-xs">
@@ -2871,6 +2929,7 @@ export default function TeacherDashboard() {
               </div>
             )}
 
+            {/* TAB 2: GRADE ENTRY MATRIX */}
             {sisTab === 'subject_grades' && (
               <div className="space-y-6">
                 <div className={`p-4 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm ${isDark ? 'bg-slate-950/80 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
@@ -3056,6 +3115,7 @@ export default function TeacherDashboard() {
               </div>
             )}
 
+            {/* TAB 3: ALL LEARNERS TERM SUMMARY MATRIX */}
             {sisTab === 'class_summary' && (
               <div className="space-y-4">
                 <div className={`p-4 rounded-2xl border flex justify-between items-center ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
@@ -3117,6 +3177,7 @@ export default function TeacherDashboard() {
               </div>
             )}
 
+            {/* TAB 4: BATCH GRADE SLIP PRINTER */}
             {sisTab === 'gradeslip_preview' && (
               <div className="space-y-6">
                 <div className={`p-4 rounded-2xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 print:hidden ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
@@ -3162,11 +3223,13 @@ export default function TeacherDashboard() {
                     ))}
                   </div>
                 )}
+
               </div>
             )}
           </div>
         )}
 
+        {/* ELECTIVE PRESET MANAGER MODAL */}
         {showPresetManager && (
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div className={`w-full max-w-lg p-6 rounded-2xl border shadow-2xl space-y-4 ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
@@ -3225,6 +3288,7 @@ export default function TeacherDashboard() {
           </div>
         )}
 
+        {/* ADD ENROLLED LEARNER MODAL */}
         {showAddModal && (
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div className={`w-full max-w-md p-6 rounded-2xl border shadow-2xl space-y-4 ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
@@ -3271,6 +3335,7 @@ export default function TeacherDashboard() {
           </div>
         )}
 
+        {/* ADD ARAL LEARNER MODAL */}
         {showAddAralLearnerModal && (
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div className={`w-full max-w-md p-6 rounded-2xl border shadow-2xl space-y-4 ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
@@ -3307,8 +3372,11 @@ export default function TeacherDashboard() {
           </div>
         )}
 
+        {/* ==================== ARAL MODULE ==================== */}
         {activeTab === 'aral' && (
           <div className="space-y-6">
+            
+            {/* ARAL DASHBOARD METRICS CARDS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className={`p-4 rounded-2xl border flex items-center justify-between shadow-sm ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
                 <div>
@@ -3347,6 +3415,7 @@ export default function TeacherDashboard() {
               </div>
             </div>
 
+            {/* NAVIGATION SUB-TABS */}
             <div className={`flex border-b ${isDark ? 'border-slate-800' : 'border-slate-200'} space-x-1`}>
               <button onClick={() => setAralSubTab('attendance')} className={`px-4 py-2.5 text-xs font-bold rounded-t-xl transition flex items-center gap-2 ${aralSubTab === 'attendance' ? 'bg-amber-600 text-white' : isDark ? 'bg-slate-950/60 text-slate-400 hover:text-white' : 'bg-slate-100 text-slate-600 hover:text-slate-900'}`}>
                 <FileSpreadsheet className="w-3.5 h-3.5" /> ARAL SF2-Style Attendance
@@ -3359,6 +3428,7 @@ export default function TeacherDashboard() {
               </button>
             </div>
 
+            {/* SUB-TAB 1: ARAL SF2 ATTENDANCE SHEET */}
             {aralSubTab === 'attendance' && (
               <div className="space-y-4">
                 <div className={`p-4 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
@@ -3440,8 +3510,11 @@ export default function TeacherDashboard() {
               </div>
             )}
 
+            {/* SUB-TAB 2: ARAL WEEKLY REPORT EDITOR */}
             {aralSubTab === 'report_editor' && (
               <div className="space-y-6">
+                
+                {/* SELECTOR BAR */}
                 <div className={`p-4 rounded-2xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-sm ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
                   <div className="flex flex-wrap items-center gap-3">
                     <label className={`text-xs font-bold uppercase ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Select ARAL Tutee:</label>
@@ -3470,6 +3543,7 @@ export default function TeacherDashboard() {
                   </div>
                 </div>
 
+                {/* TARGET STATUS CONTROLS & SUGGESTED REMARKS ENGINE */}
                 <div className={`p-5 rounded-2xl border space-y-4 ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <h4 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     <Target className="w-4 h-4 text-amber-500" /> Progress Status & Tutor Notes Editor
@@ -3481,12 +3555,12 @@ export default function TeacherDashboard() {
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-amber-400">{cat.categoryName}</span>
                           <select 
-                            value={aralTargetStatuses[cat.id] || ' Observed'} 
+                            value={aralTargetStatuses[cat.id] || '✔ Observed'} 
                             onChange={e => setAralTargetStatuses({ ...aralTargetStatuses, [cat.id]: e.target.value })}
                             className={`p-1 rounded-lg text-xs font-bold border focus:outline-none ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900'}`}>
-                            <option value=" Observed"> Observed</option>
-                            <option value=" Partially Observed"> Partially Observed</option>
-                            <option value=" Not Observed"> Not Observed</option>
+                            <option value="✔ Observed">✔ Observed</option>
+                            <option value="◑ Partially Observed">◑ Partially Observed</option>
+                            <option value="✘ Not Observed">✘ Not Observed</option>
                           </select>
                         </div>
                         <input 
@@ -3500,6 +3574,7 @@ export default function TeacherDashboard() {
                     ))}
                   </div>
 
+                  {/* SUGGESTED REMARKS ENGINE */}
                   <div className="pt-2 border-t border-slate-800 space-y-2">
                     <label className="block text-xs font-bold text-amber-400">Suggested Tutor Remarks Preset:</label>
                     <select 
@@ -3522,10 +3597,13 @@ export default function TeacherDashboard() {
                   </div>
                 </div>
 
+                {/* SINGLE SHEET PRINTABLE PREVIEW */}
                 {renderAralSingleReportCard(selectedAralLearner)}
+
               </div>
             )}
 
+            {/* SUB-TAB 3: ARAL BATCH REPORTS PRINTER */}
             {aralSubTab === 'batch_reports' && (
               <div className="space-y-6">
                 <div className={`p-4 rounded-2xl border flex items-center justify-between print:hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
@@ -3550,9 +3628,12 @@ export default function TeacherDashboard() {
                 </div>
               </div>
             )}
+
           </div>
         )}
+
       </main>
     </div>
   );
 }
+EOF
