@@ -1,3 +1,4 @@
+"use client";
 
 const CATEGORY_OBSERVATION_NOTES: Record<string, Record<string, string[]>> = {
   'Vocabulary & Context Clues': {
@@ -106,7 +107,6 @@ const CATEGORY_OBSERVATION_NOTES: Record<string, Record<string, string[]>> = {
   }
 };
 
-"use client";
 
 import Link from 'next/link';
 
@@ -972,7 +972,7 @@ export default function TeacherDashboard() {
       // Fallback if API fails
       const fallbackNotes: Record<string, string> = {};
       ARAL_READING_CATEGORIES.forEach(cat => {
-        fallbackNotes[cat.id] = (CATEGORY_OBSERVATION_NOTES[category.name]?.[category.status]?.[0] || 'Learner demonstrates steady progress during targeted session tasks.');
+        fallbackNotes[cat.id] = (CATEGORY_OBSERVATION_NOTES[(cat as any).title || (cat as any).name || (cat as any).category]?.[(cat as any).status || (cat as any).level || "Observed"]?.[0] || 'Learner demonstrates steady progress during targeted session tasks.');
       });
       setAralTargetNotes(prev => ({ ...prev, ...fallbackNotes }));
     } finally {
