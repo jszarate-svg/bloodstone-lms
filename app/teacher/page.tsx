@@ -2297,6 +2297,124 @@ export default function TeacherDashboard() {
               </table>
 
             </div>
+
+        {/* SF2 OFFICIAL BOTTOM SUMMARY & CERTIFICATION SECTION */}
+        <div className="mt-4 border-2 border-black text-[10px] text-black font-sans leading-tight bg-white p-2">
+          <div className="grid grid-cols-12 border-b border-black pb-2">
+            
+            {/* GUIDELINES COLUMN */}
+            <div className="col-span-4 pr-2 border-r border-black space-y-1 text-[8.5px]">
+              <p className="font-bold underline">GUIDELINES:</p>
+              <p>1. The attendance shall be accomplished daily. Refer to the codes for checking learners' attendance.</p>
+              <p>2. Dates shall be written in the preceding columns beside Learner's Name.</p>
+              <p>3. To compute the following:</p>
+              <div className="pl-1 space-y-0.5">
+                <p>a. <span className="font-semibold">Percentage of Enrolment</span> = (Registered Learners at End of Month / Enrolment as of 1st Friday) × 100</p>
+                <p>b. <span className="font-semibold">Average Daily Attendance (ADA)</span> = Total Daily Attendance / Number of School Days in Month</p>
+                <p>c. <span className="font-semibold">Percentage of Attendance</span> = (Average Daily Attendance / Registered Learners at End of Month) × 100</p>
+              </div>
+              <p>4. Every end of the month, class adviser submits this form to principal for recording into SF4.</p>
+            </div>
+
+            {/* CODES FOR CHECKING ATTENDANCE */}
+            <div className="col-span-4 px-2 border-r border-black space-y-1 text-[8.5px]">
+              <p className="font-bold underline">1. CODES FOR CHECKING ATTENDANCE</p>
+              <p><span className="font-bold">[blank]</span> - Present | <span className="font-bold">(x)</span> - Absent | <span className="font-bold">h</span> - Half-day</p>
+              
+              <p className="font-bold underline pt-1">2. REASONS/CAUSES FOR NLS</p>
+              <div className="grid grid-cols-2 text-[8px] gap-x-1">
+                <div>
+                  <p className="font-semibold">a. Domestic Factors</p>
+                  <p>a.1. Sibling care</p>
+                  <p>a.2. Early marriage</p>
+                  <p>a.3. Parents' attitude</p>
+                </div>
+                <div>
+                  <p className="font-semibold">b. Individual Factors</p>
+                  <p>b.1. Illness</p>
+                  <p>b.2. Overage</p>
+                  <p>b.3. Financial/Work</p>
+                </div>
+              </div>
+            </div>
+
+            {/* SUMMARY FOR THE MONTH TABLE */}
+            <div className="col-span-4 pl-2">
+              <div className="flex justify-between items-center mb-1 font-bold text-[9px]">
+                <span>Summary for Month</span>
+                <span>Days of Classes: 14</span>
+              </div>
+              
+              <table className="w-full text-center border-collapse border border-black text-[8px]">
+                <thead>
+                  <tr className="bg-gray-100 border-b border-black font-bold">
+                    <th className="border-r border-black p-0.5 text-left pl-1">SEPTEMBER</th>
+                    <th className="border-r border-black w-6">M</th>
+                    <th className="border-r border-black w-6">F</th>
+                    <th className="w-8">TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-black">
+                    <td className="border-r border-black text-left pl-1">Enrolment 1st Friday</td>
+                    <td className="border-r border-black">20</td>
+                    <td className="border-r border-black">13</td>
+                    <td className="font-bold">33</td>
+                  </tr>
+                  <tr className="border-b border-black">
+                    <td className="border-r border-black text-left pl-1">Registered (End of Month)</td>
+                    <td className="border-r border-black">20</td>
+                    <td className="border-r border-black">13</td>
+                    <td className="font-bold">33</td>
+                  </tr>
+                  <tr className="border-b border-black font-semibold">
+                    <td className="border-r border-black text-left pl-1">Avg Daily Attendance (ADA)</td>
+                    <td className="border-r border-black">17.6</td>
+                    <td className="border-r border-black">12.8</td>
+                    <td className="font-bold">30.4</td>
+                  </tr>
+                  <tr className="border-b border-black font-semibold">
+                    <td className="border-r border-black text-left pl-1">% of Attendance</td>
+                    <td className="border-r border-black">84.0%</td>
+                    <td className="border-r border-black">98.1%</td>
+                    <td className="font-bold">89.4%</td>
+                  </tr>
+                  <tr className="border-b border-black">
+                    <td className="border-r border-black text-left pl-1">5+ Consecutive Absences</td>
+                    <td className="border-r border-black">1</td>
+                    <td className="border-r border-black">0</td>
+                    <td className="font-bold">1</td>
+                  </tr>
+                  <tr>
+                    <td className="border-r border-black text-left pl-1">Transferred In</td>
+                    <td className="border-r border-black">0</td>
+                    <td className="border-r border-black">1</td>
+                    <td className="font-bold">1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* SIGNATURE SIGN-OFF BLOCK */}
+          <div className="grid grid-cols-2 pt-2 text-center gap-6">
+            <div>
+              <p className="text-left text-[8px] italic mb-3">I certify that this is a true and correct report.</p>
+              <div className="border-b border-black font-bold uppercase text-[10px] pb-0.5">
+                JUDIMER JOHN S. ZARATE
+              </div>
+              <p className="text-[8px] text-gray-700 mt-0.5">(Signature of Adviser over Printed Name)</p>
+            </div>
+
+            <div>
+              <p className="text-left text-[8px] italic mb-3">Attested by:</p>
+              <div className="border-b border-black font-bold uppercase text-[10px] pb-0.5">
+                HOMEYLIN U. BIRONDO
+              </div>
+              <p className="text-[8px] text-gray-700 mt-0.5">(Signature of School Head over Printed Name)</p>
+            </div>
+          </div>
+        </div>
           </div>
         )}
 
